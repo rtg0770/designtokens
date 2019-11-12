@@ -1,6 +1,8 @@
 # designtokens
 In this example you can see how to set up a connection to a Figma file via Figma API to get design tokens and create variables in our sass.
 
+Sample Figma file: https://www.figma.com/file/4Nnd1lDE5nV7zxrzi3vkTd/okds?node-id=12%3A30
+
 1 Figma API
 JS in this example creates a JSON file from a design file in Figma. (It uses Figma API https://www.figma.com/developers/api where you can download a wide specturum of information). Use the download-json.html example to download the tokens.json.
 
