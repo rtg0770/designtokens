@@ -39,146 +39,6 @@ function getPalette(stylesArtboard) {
     return palette;
 }
 
-function getGrids(stylesArtboard) {
-
-    const grids = {};
-    const gridsAtrboard = stylesArtboard.filter(item => {
-        return item.name === "grids";
-    })[0].children;
-
-    gridsAtrboard.map(item => {
-        const gridObj = {
-            [item.name]: {
-                count: {
-                    value: item.layoutGrids[0].count,
-                    type: "grids"
-                },
-                gutter: {
-                    value: `${item.layoutGrids[0].gutterSize}px`,
-                    type: "grids"
-                },
-                offset: {
-                    value: `${item.layoutGrids[0].offset}px`,
-                    type: "grids"
-                },
-                width: {
-                    value: `${item.absoluteBoundingBox.width}px`,
-                    type: "grids"
-                }
-            }
-        };
-
-        Object.assign(grids, gridObj);
-    });
-
-    return grids;
-}
-
-function getSpacers(stylesArtboard) {
-
-    const spacers = {};
-
-    const spacersAtrboard = stylesArtboard.filter(item => {
-        return item.name === "spacers";
-    })[0].children;
-
-    spacersAtrboard.map(item => {
-        const spacerObj = {
-            [item.name]: {
-                value: `${item.absoluteBoundingBox.height}px`,
-                type: "spacers"
-            }
-        };
-
-        Object.assign(spacers, spacerObj);
-    });
-
-    return spacers;
-}
-
-function getFontStyles(stylesArtboard) {
-
-    const fontStyles = {};
-
-    const fontStylesAtrboard = stylesArtboard.filter(item => {
-        return item.name === "fonts";
-    })[0].children;
-
-    fontStylesAtrboard.map((fontItem, i) => {
-        if (fontItem.children) {
-            let subFonts = {};
-
-            fontItem.children.map(subFontItem => {
-                let subFontObj = {
-                    [subFontItem.name]: {
-                        family: {
-                            value: `${subFontItem.style.fontFamily}`,
-                            type: "typography"
-                        },
-                        size: {
-                            value: `${subFontItem.style.fontSize}px`,
-                            type: "typography"
-                        },
-                        weight: {
-                            value: subFontItem.style.fontWeight,
-                            type: "typography"
-                        },
-                        lineheight: {
-                            value: `${subFontItem.style.lineHeightPercent}%`,
-                            type: "typography"
-                        },
-                        spacing: {
-                            value: subFontItem.style.letterSpacing !== 0 ?
-                                `${subFontItem.style.letterSpacing}px` : "normal",
-                            type: "typography"
-                        }
-                    }
-                };
-                Object.assign(subFonts, subFontObj);
-            });
-
-            //
-            let fontObj = {
-                [fontItem.name]: subFonts
-            };
-
-            Object.assign(fontStyles, fontObj);
-        } else {
-            let fontObj = {
-                [fontItem.name]: {
-                    family: {
-                        value: `${fontItem.style.fontFamily}, ${
-                            fontItem.style.fontPostScriptName
-                        }`,
-                        type: "typography"
-                    },
-                    size: {
-                        value: fontItem.style.fontSize,
-                        type: "typography"
-                    },
-                    weight: {
-                        value: fontItem.style.fontWeight,
-                        type: "typography"
-                    },
-                    lineheight: {
-                        value: `${fontItem.style.lineHeightPercent}%`,
-                        type: "typography"
-                    },
-                    spacing: {
-                        value: fontItem.style.letterSpacing !== 0 ?
-                            `${fontItem.style.letterSpacing}px` : "normal",
-                        type: "typography"
-                    }
-                }
-            };
-
-            Object.assign(fontStyles, fontObj);
-        }
-    });
-
-    return fontStyles;
-}
-
 async function getStylesArtboard(figmaApiKey, figmaId) {
     const result = await fetch("https://api.figma.com/v1/files/" + figmaId, {
         method: "GET",
@@ -192,23 +52,17 @@ async function getStylesArtboard(figmaApiKey, figmaId) {
         return item.name === "styles";
     })[0].children;
 
-    baseTokeensJSON = {
+    baseTokensJSON = {
         token: {
-            grids: {},
-            spacers: {},
-            colors: {},
-            fonts: {}
+            colors: {}
         }
     };
 
-    Object.assign(baseTokeensJSON.token.grids, getGrids(stylesArtboard));
-    Object.assign(baseTokeensJSON.token.spacers, getSpacers(stylesArtboard));
-    Object.assign(baseTokeensJSON.token.colors, getPalette(stylesArtboard));
-    Object.assign(baseTokeensJSON.token.fonts, getFontStyles(stylesArtboard));
+    Object.assign(baseTokensJSON.token.colors, getPalette(stylesArtboard));
 
     download(
-        JSON.stringify(baseTokeensJSON, null, 4),
-        "tokens.json",
+        JSON.stringify(baseTokensJSON, null, 1),
+        "colors.json",
         "application/json"
     );
 }
@@ -216,8 +70,8 @@ async function getStylesArtboard(figmaApiKey, figmaId) {
 getJSONBtn.onclick = function () {
 
     getStylesArtboard(
-        "19013-cdcfcf47-c2b6-4b5d-91dc-07f86f7960a7",
-        "4Nnd1lDE5nV7zxrzi3vkTd"
+        "42182-9828e40e-f4fd-4127-90ed-b3c52e4bf982",
+        "wBhrKxzQznvWBQekyQe0xd"
     );
-    console.log("downloading base.json");
+    console.log("downloading colors.json");
 };
